@@ -55,14 +55,14 @@ def train():
         gamma=config.gamma,
         initial_epsilon=1,
         final_epsilon=0.1,
-        epsilon_decay_steps=100000,
+        epsilon_decay_steps=200000,
         log=False,
 
     )
 
     # Training
     agent.train(
-        total_timesteps=100000,
+        total_timesteps=200000,
         start_time=time.time(),
         eval_freq=100,
         eval_env=eval_env,
@@ -85,9 +85,9 @@ def train():
     message = f"Reward obtained by Algorithm with gamma={config.gamma}, tau={config.tau}, and weights w1={w1}, w2={w2} is {disc_reward}. with hypervolume of {hv}"
     print(message)
 
-  # Open a file in append mode ('a' allows you to keep adding to the file without overwriting)
-    with open("DSTsweeps.txt", "a") as file:
-      file.write(message + "\n")  # Write the message and add a newline character
+    '''Open a file in append mode ('a' allows you to keep adding to the file without overwriting)
+     with open("DSTsweeps.txt", "a") as file:
+      file.write(message + "\n")  # Write the message and add a newline character'''
 
 
 # Initialize the sweep and run the agent
