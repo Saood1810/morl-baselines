@@ -56,7 +56,8 @@ def train():
         gamma=config.gamma,
         initial_epsilon=1,
         final_epsilon=0.1,
-        epsilon_decay_steps=100000.
+        epsilon_decay_steps=100000,
+        log=False,
 
     )
 

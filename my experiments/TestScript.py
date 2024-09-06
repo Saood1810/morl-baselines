@@ -74,6 +74,7 @@ for i in range(0, len(weight_combinations)):
             start_time=time.time(),
             eval_freq=100,
             eval_env=eval_env,
+            log=False,
         )
         #eval_env.reset()
         _,_,_,disc_reward=(eval_mo(agent, env=eval_env, w=weights))
