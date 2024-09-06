@@ -37,8 +37,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from morl_baselines.common.evaluation import policy_evaluation_mo
-wandb.login(key='e59e68a6a5472c9bbadb6ab9ce6ca89e9fce402e')
-wandb.init(project="CHPC Results")
+wandb.init(mode="offline", project="CHPC Results")
 def generate_combinations(step=0.1):
     weights = [round(i * step, 1) for i in range(int(1 / step) + 1)]
     combinations = []

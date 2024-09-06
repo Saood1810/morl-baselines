@@ -10,9 +10,8 @@ from pymoo.visualization.scatter import Scatter
 from pymoo.problems import get_problem
 
 import wandb
-# Login to Wandb with your API key
-wandb.login(key='e59e68a6a5472c9bbadb6ab9ce6ca89e9fce402e')
-wandb.init(project="CHPC Results")
+
+wandb.init(mode="offline", project="CHPC Results")
 import numpy as np
 
 def generate_combinations(step=0.1):

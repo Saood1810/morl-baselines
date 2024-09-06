@@ -17,7 +17,7 @@ from morl_baselines.common.evaluation import log_all_multi_policy_metrics
 from morl_baselines.common.pareto import filter_pareto_dominated
 from morl_baselines.common.performance_indicators import hypervolume
 
-wandb.login(key='e59e68a6a5472c9bbadb6ab9ce6ca89e9fce402e')
+wandb.init(mode="offline", project="CHPC Results")
 
 # Define the sweep configuration
 sweep_configuration = {
@@ -34,7 +34,7 @@ sweep_configuration = {
 #We will analyse the quaility of solutions found by algorithms
 
 def train():
-    wandb.init()
+
     config = wandb.config
 
     # Initialization
