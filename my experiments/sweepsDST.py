@@ -50,7 +50,6 @@ def train():
         env,
         scalarization=scalarization,
         weights=weights,
-        log=True,
         project_name= "MORL Research",
         experiment_name="Sweeps MOQ in DST Concave",
         gamma=config.gamma,
