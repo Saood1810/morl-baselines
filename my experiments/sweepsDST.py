@@ -31,8 +31,6 @@ sweep_configuration = {
     }
 }
 
-
-
 #We will analyse the quaility of solutions found by algorithms
 
 def train():
@@ -56,14 +54,15 @@ def train():
         project_name= "MORL Research",
         experiment_name="Sweeps MOQ in DST Concave",
         gamma=config.gamma,
-        initial_epsilon=0.1,
+        initial_epsilon=1,
         final_epsilon=0.1,
+        epsilon_decay_steps=100000.
 
     )
 
     # Training
     agent.train(
-        total_timesteps=200000,
+        total_timesteps=100000,
         start_time=time.time(),
         eval_freq=100,
         eval_env=eval_env,
@@ -87,7 +86,7 @@ def train():
     print(message)
 
   # Open a file in append mode ('a' allows you to keep adding to the file without overwriting)
-    with open("results.txt", "a") as file:
+    with open("DSTsweeps.txt", "a") as file:
       file.write(message + "\n")  # Write the message and add a newline character
 
 
