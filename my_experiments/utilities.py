@@ -24,14 +24,11 @@ def generate_combinations(step=0.1):
                 combinations.append((w1, w2, w3))
     return combinations
 
-# Generate and print combinations
-combinations = generate_combinations()
-print(len(combinations))
-for combo in combinations:
-    print(combo)
+
 
 # will have exp_name as a parameter
-
+from pymoo.visualization.scatter import Scatter
+from pymoo.problems import get_problem
 def evaluate(tracked_policies,ref_point,eval_env):
 
 
@@ -60,9 +57,9 @@ def evaluate(tracked_policies,ref_point,eval_env):
 
   return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
 
-def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,exp_name):
+def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name):
 
-  wandb.init(project="CHPC Results",name=exp_name)
+  wandb.init(project=proj_name,name=exp_name)
   timesteps=[0]
   for i in range(len(hypervolume_scores)):
     timesteps.append((i+1)*100) #Tracking every 100 steps
@@ -122,6 +119,10 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
   plt.grid(True)
 
   plt.show()
+
+
+
+
   
 def scatter_plot_known_pareto(pf1,pf2,eval_env,ref_point,exp_name,alg_name1,alg_name2):
   
