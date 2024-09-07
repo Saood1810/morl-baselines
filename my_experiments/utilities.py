@@ -76,6 +76,7 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
             'sparsity': sp_score,
             'timestep': timestep,
         })
+  wandb.finish()
 
 
   # Print results
