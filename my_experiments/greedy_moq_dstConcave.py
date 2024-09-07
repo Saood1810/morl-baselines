@@ -31,7 +31,7 @@ import matplotlib.pyplot as plt
 from morl_baselines.common.evaluation import policy_evaluation_mo
 
 
-rows, cols = 11, 2000   #11 Agents and eval at 5 steps each
+rows, cols = 11, 2   #11 Agents and eval at 5 steps each
 moq_eval_rewards=np.zeros((rows,cols,2))
 for i in range(0, 11):
     print(i)
@@ -42,7 +42,7 @@ for i in range(0, 11):
 
     moq = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=0.1,final_epsilon=0.1, gamma=0.99, weights=weights, log=False)
 
-    for z in range(0, 2000):
+    for z in range(0, 2):
         moq.train(
             total_timesteps=100,
             reset_num_timesteps= False,
