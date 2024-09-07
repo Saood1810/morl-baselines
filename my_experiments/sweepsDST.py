@@ -62,7 +62,7 @@ def train():
 
     # Training
     agent.train(
-        total_timesteps=200000,
+        total_timesteps=1000,
         start_time=time.time(),
         eval_freq=100,
         eval_env=eval_env,
@@ -92,5 +92,5 @@ def train():
 
 # Initialize the sweep and run the agent
 sweep_id = wandb.sweep(sweep_configuration, project="MORL Research")
-wandb.agent(sweep_id, function=train, count=80)  
+wandb.agent(sweep_id, function=train, count=5)  
 wandb.finish()
