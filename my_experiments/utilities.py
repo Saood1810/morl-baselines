@@ -11,7 +11,7 @@ from pymoo.problems import get_problem
 
 import wandb
 
-wandb.init(mode="offline", project="CHPC Results")
+#wandb.init(mode="offline", project="CHPC Results")
 import numpy as np
 
 def generate_combinations(step=0.1):
@@ -59,7 +59,7 @@ def evaluate(tracked_policies,ref_point,eval_env):
 
 def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name):
 
-  wandb.init(project=proj_name,name=exp_name)
+  wandb.init(mode="offline",project=proj_name,name=exp_name)
   timesteps=[0]
   for i in range(len(hypervolume_scores)):
     timesteps.append((i+1)*100) #Tracking every 100 steps

@@ -38,7 +38,7 @@ env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gam
 eval_env = mo_gym.make("deep-sea-treasure-concave-v0", render_mode="rgb_array")
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
-  exp_name = f"Experiment with seed {seed}"
+  exp_name = f"chpc Experiment with seed {seed}"
   rows, cols = 11, 10   #11 Agents
   random.seed(seed)
   np.random.seed(seed)
@@ -59,7 +59,6 @@ for seed in SEEDS:
               total_timesteps=1000,
               reset_num_timesteps= False,
               start_time=time.time(),
-              eval_freq=100,
               eval_env=eval_env,
           )
           #eval_env.reset()
