@@ -93,4 +93,4 @@ def train():
 # Initialize the sweep and run the agent
 sweep_id = wandb.sweep(sweep_configuration, project="MORL Research")
 wandb.agent(sweep_id, function=train, count=5)  
-wandb.finish()
+
