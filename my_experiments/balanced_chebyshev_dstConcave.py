@@ -49,25 +49,26 @@ for seed in SEEDS:
   for i in range(0, 11):
       print(i)
       
-          
+          #scalarization = tchebicheff(tau=4.0, reward_dim=2)
       weights = np.array([1 - (i / 10), i / 10])
 
-      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=0.1,final_epsilon=0.1, gamma=0.99, weights=weights,seed=seed, log=False)
+      chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.99, weights=weights,seed=seed, log=False)
 
       for z in range(0, 1000):
-          linear.train(
+          chebyshev.train(
               total_timesteps=1000,
               reset_num_timesteps= False,
               start_time=time.time(),
               eval_env=eval_env,
           )
           #eval_env.reset()
-          _,_,_,disc_reward=(eval_mo(linear, env=eval_env, w=weights))
+          _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Greedy MOQ linear Scalarized DST ",exp_name)
-  print("Greedy MOQ Linear Results for seed: ",seed)
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Balanced MOQ Chebyshev Scalarized DST ",exp_name)
+  
+  print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)
   print(hypervolume_scores)
   print(cardinality_scores)
