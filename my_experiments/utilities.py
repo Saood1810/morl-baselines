@@ -57,9 +57,9 @@ def evaluate(tracked_policies,ref_point,eval_env):
 
   return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
 
-def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name):
+def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group):
 
-  wandb.init(mode="offline",project=proj_name,name=exp_name)
+  wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
   timesteps=[0]
   for i in range(len(hypervolume_scores)):
     timesteps.append((i+1)*100) #Tracking every 100 steps
