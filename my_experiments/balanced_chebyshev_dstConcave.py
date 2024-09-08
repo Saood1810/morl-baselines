@@ -66,7 +66,7 @@ for seed in SEEDS:
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Balanced MOQ Chebyshev Scalarized DST ",exp_name,"Balanced MOQ Chebyshev DST")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs",exp_name,"Balanced MOQ Chebyshev DST")
   
   print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)
