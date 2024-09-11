@@ -8,9 +8,10 @@ import wandb
 SEEDS = [42]  # 10 seeds
 env = mo_gym.make("deep-sea-treasure-concave-v0")
 ref_point = np.array([0, -25])
-os.environ['WANDB_MODE'] = 'offline'
-wandb.init(mode="offline",project="Research Project Logs")
+#os.environ['WANDB_MODE'] = 'offline'
+
 for seed in SEEDS:
+    wandb.init(mode="offline",project="Research Project Logs")
     
     print(f"Running experiment with seed {seed}")
     env.reset(seed=seed)
@@ -30,12 +31,13 @@ for seed in SEEDS:
         log=True,)
 
     pf = agent.train(
-        total_timesteps=10000,
+        total_timesteps=1000,
         log_every=100,
         action_eval="hypervolume",
         known_pareto_front=env.pareto_front(gamma=0.99),
         ref_point=ref_point,
         eval_env=env,)
+    wandb.finish()
     print(pf)
 
     # Execute a policy
@@ -43,4 +45,3 @@ for seed in SEEDS:
     print(f"Tracking {target}")
     reward = agent.track_policy(target, env=env)
     print(f"Obtained {reward}")
-wandb.finish()
