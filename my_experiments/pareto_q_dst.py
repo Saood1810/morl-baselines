@@ -28,21 +28,33 @@ for seed in SEEDS:
         final_epsilon=0.1,
         seed=seed,
         experiment_name="Pareto Q-Learning in DST",
-        log=True,)
+        log=False,)
     
-    agent.setup_wandb(project_name="Research Project Logs", experiment_name=agent.experiment_name,mode="offline")
+    #agent.setup_wandb(project_name="Research Project Logs", experiment_name=agent.experiment_name,mode="offline")
 
 
     pf = agent.train(
-        total_timesteps=1000,
+        total_timesteps=2000,
         log_every=100,
         action_eval="hypervolume",
         known_pareto_front=env.pareto_front(gamma=0.99),
         ref_point=ref_point,
         eval_env=env,)
-    agent.close_wandb()
+    #agent.close_wandb()
     #wandb.finish()
     print(pf)
+    pf = agent.train(
+        total_timesteps=2000,
+        log_every=100,
+        action_eval="hypervolume",
+        known_pareto_front=env.pareto_front(gamma=0.99),
+        ref_point=ref_point,
+        eval_env=env,)
+    print(pf)
+    print(agent.epsilon)
+    
+    
+    
 
     # Execute a policy
     target = np.array(pf.pop())
