@@ -33,7 +33,7 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 import random
 
 
-SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51,52,53]  # 10 seeds
+SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.99)
 eval_env = mo_gym.make("deep-sea-treasure-concave-v0", render_mode="rgb_array")
 for seed in SEEDS:
@@ -52,7 +52,7 @@ for seed in SEEDS:
           
       weights = np.array([1 - (i / 10), i / 10])
 
-      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.99, weights=weights,seed=seed, log=False)
+      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.9, weights=weights,seed=seed, log=False)
 
       for z in range(0, 10000):
           linear.train(
@@ -65,8 +65,8 @@ for seed in SEEDS:
           _,_,_,disc_reward=(eval_mo(linear, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
-  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Balanced MOQ linear Scalarized DST ",exp_name,"Balanced MOQ Linear DST")
+  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-25]),eval_env)
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V2",exp_name,"Balanced MOQ Linear DST")
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
  

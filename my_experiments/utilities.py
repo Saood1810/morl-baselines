@@ -81,7 +81,7 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
 
   # Print results
   print("Final Pareto Front:", pf)
-  print("Hypervolume Scores:", hypervolume_scores)
+  '''print("Hypervolume Scores:", hypervolume_scores)
   # Print results
 
 
@@ -119,7 +119,7 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
   plt.title('Learning Curve with IGD')
   plt.grid(True)
 
-  plt.show()
+  plt.show()'''
 
 
 
