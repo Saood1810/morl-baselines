@@ -52,9 +52,9 @@ for seed in SEEDS:
           
       weights = np.array([1 - (i / 10), i / 10])
 
-      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=0.1,final_epsilon=0.1, gamma=0.99, weights=weights,seed=seed, log=False)
+      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=0.1,final_epsilon=0.1, gamma=0.9, weights=weights,seed=seed, log=False)
 
-      for z in range(0, 10000):
+      for z in range(0, 3000):
           linear.train(
               total_timesteps=100,
               reset_num_timesteps= False,
