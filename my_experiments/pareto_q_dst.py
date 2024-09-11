@@ -40,6 +40,7 @@ for seed in SEEDS:
         known_pareto_front=env.pareto_front(gamma=0.99),
         ref_point=ref_point,
         eval_env=env,)
+    print(agent.epsilon)
     #agent.close_wandb()
     #wandb.finish()
     print(pf)
