@@ -4,7 +4,7 @@ import random
 from morl_baselines.multi_policy.pareto_q_learning.pql import PQL
 import os
 
-SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51,52,53]  # 10 seeds
+SEEDS = [42]  # 10 seeds
 env = mo_gym.make("deep-sea-treasure-concave-v0")
 ref_point = np.array([0, -25])
 os.environ['WANDB_MODE'] = 'offline'
@@ -19,7 +19,7 @@ for seed in SEEDS:
     agent = PQL(
         env,
         ref_point,
-        gamma=0.99,
+        gamma=0.9,
         initial_epsilon=0.1,
         final_epsilon=0.1,
         seed=seed,
