@@ -11,7 +11,7 @@ ref_point = np.array([0, -25])
 #os.environ['WANDB_MODE'] = 'offline'
 
 for seed in SEEDS:
-    wandb.init(mode="offline",project="Research Project Logs")
+    #wandb.init(mode="offline",project="Research Project Logs")
     
     print(f"Running experiment with seed {seed}")
     env.reset(seed=seed)
@@ -29,6 +29,9 @@ for seed in SEEDS:
         seed=seed,
         experiment_name="Pareto Q-Learning in DST",
         log=True,)
+    
+    agent.setup_wandb(project_name="Research Project Logs", experiment_name=agent.experiment_name,mode="offline")
+
 
     pf = agent.train(
         total_timesteps=1000,
@@ -37,7 +40,8 @@ for seed in SEEDS:
         known_pareto_front=env.pareto_front(gamma=0.99),
         ref_point=ref_point,
         eval_env=env,)
-    wandb.finish()
+    agent.close_wandb()
+    #wandb.finish()
     print(pf)
 
     # Execute a policy
