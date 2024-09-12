@@ -5,6 +5,7 @@ from morl_baselines.multi_policy.pareto_q_learning.pql import PQL
 import os
 import wandb
 from utilities import eval_pql,log_results
+
 SEEDS = [42]  # 10 seeds
 env = mo_gym.make("deep-sea-treasure-concave-v0")
 ref_point = np.array([0, -25])
@@ -45,9 +46,4 @@ for seed in SEEDS:
     
     #agent.close_wandb()
 
-    # Execute a policy
-    target = np.array(pf.pop())
-    print(f"Tracking {target}")
-    reward = agent.track_policy(target, env=env)
-    print(f"Obtained {reward}")
-    wandb.finish()
+    
