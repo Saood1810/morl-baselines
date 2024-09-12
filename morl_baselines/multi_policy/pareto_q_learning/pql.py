@@ -99,7 +99,7 @@ class PQL(MOAgent):
         self.log = log
         
           #Set wandb up
-        wandb.init(mode="offline",project="Research Project Logs",name= self.project_name)
+        #wandb.init(mode="offline",project="Research Project Logs",name= self.project_name)
 
         
 
@@ -223,6 +223,8 @@ class PQL(MOAgent):
         Returns:
             Set: The final Pareto front.
         """
+        #collect the rewards at eval step
+        tracked_policy_rewards = []
         if action_eval == "hypervolume":
             score_func = self.score_hypervolume
         elif action_eval == "pareto_cardinality":
@@ -261,16 +263,17 @@ class PQL(MOAgent):
                 state = next_state
 
                 if self.global_step % log_every == 0:
-                    wandb.log({"global_step": self.global_step})
+                    #wandb.log({"global_step": self.global_step})
                     pf = self._eval_all_policies(eval_env)
-                    log_all_multi_policy_metrics(
+                    tracked_policy_rewards.append(pf)
+                    '''log_all_multi_policy_metrics(
                         current_front=pf,
                         hv_ref_point=ref_point,
                         reward_dim=self.reward_dim,
                         global_step=self.global_step,
                         n_sample_weights=num_eval_weights_for_eval,
                         ref_front=known_pareto_front,
-                    )
+                    )'''
 
             self.epsilon = linearly_decaying_value(
                 self.initial_epsilon,
@@ -279,9 +282,9 @@ class PQL(MOAgent):
                 0,
                 self.final_epsilon,
             )
-        wandb.finish() 
+        #wandb.finish() 
 
-        return self.get_local_pcs(state=0)
+        return self.get_local_pcs(state=0),tracked_policy_rewards
 
     def _eval_all_policies(self, env: gym.Env) -> List[np.ndarray]:
         """Evaluate all learned policies by tracking them."""

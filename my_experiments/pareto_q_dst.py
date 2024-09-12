@@ -4,7 +4,7 @@ import random
 from morl_baselines.multi_policy.pareto_q_learning.pql import PQL
 import os
 import wandb
-
+from utilities import eval_pql,log_results
 SEEDS = [42]  # 10 seeds
 env = mo_gym.make("deep-sea-treasure-concave-v0")
 ref_point = np.array([0, -25])
@@ -31,7 +31,7 @@ for seed in SEEDS:
         project_name="Research Project Logs",
         log=False,)
 
-    pf = agent.train(
+    pf,policies = agent.train(
         total_timesteps=1000,
         log_every=100,
         action_eval="hypervolume",
@@ -39,6 +39,10 @@ for seed in SEEDS:
         ref_point=ref_point,
         eval_env=env,)
     print(pf)
+    pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=eval_pql(policies,ref_point,env,agent.gamma)
+    log_results(pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs","Pareto Q-Learning","Pareto Q-Learning")
+    
+    
     #agent.close_wandb()
 
     # Execute a policy

@@ -29,6 +29,27 @@ def generate_combinations(step=0.1):
 # will have exp_name as a parameter
 from pymoo.visualization.scatter import Scatter
 from pymoo.problems import get_problem
+
+def eval_pql(tracked_policies,ref_point,eval_env,gamma):
+  hypervolume_scores = [0]
+  igd_scores = [0]
+  sparsity_scores = [0]
+  cardinality_scores = [0]
+  true_pf = eval_env.pareto_front(gamma=gamma)
+  
+  
+  for policy in tracked_policies:
+    pf = policy
+    pf = list(filter_pareto_dominated(pf))
+    if len(pf) > 0:
+        hypervolume_scores.append(hypervolume(ref_point, pf))
+        cardinality_scores.append(cardinality(pf))
+        igd_scores.append(igd(true_pf, pf))
+        sparsity_scores.append(sparsity(pf))
+        
+  return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
+  
+
 def evaluate(tracked_policies,ref_point,eval_env):
 
 
