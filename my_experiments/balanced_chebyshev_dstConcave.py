@@ -39,7 +39,7 @@ eval_env = mo_gym.make("deep-sea-treasure-concave-v0", render_mode="rgb_array")
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
   exp_name = f"Balanced Chebyshev Experiment with seed {seed}"
-  rows, cols = 11, 10000   #11 Agents
+  rows, cols = 11, 10   #11 Agents
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -54,7 +54,7 @@ for seed in SEEDS:
 
       chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.9, weights=weights,seed=seed, log=False)
 
-      for z in range(0, 10000):
+      for z in range(0, 10):
           chebyshev.train(
               total_timesteps=100,
               reset_num_timesteps= False,

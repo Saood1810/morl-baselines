@@ -46,4 +46,4 @@ for seed in SEEDS:
     print(f"Tracking {target}")
     reward = agent.track_policy(target, env=env)
     print(f"Obtained {reward}")
-    #wandb.finish()
+    wandb.finish()

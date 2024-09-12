@@ -32,6 +32,7 @@ class PQL(MOAgent):
         project_name: str = "MORL-Baselines",
         experiment_name: str = "Pareto Q-Learning",
         wandb_entity: Optional[str] = None,
+        mode: str = "offline",
         log: bool = True,
     ):
         """Initialize the Pareto Q-learning algorithm.
@@ -93,11 +94,12 @@ class PQL(MOAgent):
         # Logging
         self.project_name = project_name
         self.experiment_name = experiment_name
+        self.mode=mode
         self.log = log
         
 
         if self.log:
-            self.setup_wandb(mode="offline",project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
+            self.setup_wandb(mode=self.mode,project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
 
     def get_config(self) -> dict:
         """Get the configuration dictionary.
