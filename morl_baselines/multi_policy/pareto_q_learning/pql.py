@@ -224,7 +224,7 @@ class PQL(MOAgent):
             Set: The final Pareto front.
         """
         #collect the rewards at eval step
-        tracked_policy_rewards = []
+        
         if action_eval == "hypervolume":
             score_func = self.score_hypervolume
         elif action_eval == "pareto_cardinality":
@@ -244,6 +244,7 @@ class PQL(MOAgent):
                     "action_eval": action_eval,
                 }
             )
+        tracked_policy_rewards = []
 
         while self.global_step < total_timesteps:
             state, _ = self.env.reset()
@@ -284,7 +285,7 @@ class PQL(MOAgent):
             )
         #wandb.finish() 
 
-        return self.get_local_pcs(state=0),tracked_policy_rewards
+        return tracked_policy_rewards
 
     def _eval_all_policies(self, env: gym.Env) -> List[np.ndarray]:
         """Evaluate all learned policies by tracking them."""

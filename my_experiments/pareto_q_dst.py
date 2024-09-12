@@ -32,7 +32,7 @@ for seed in SEEDS:
         project_name="Research Project Logs",
         log=False,)
 
-    _,policies = agent.train(
+    policies = agent.train(
         total_timesteps=1000,
         log_every=100,
         action_eval="hypervolume",
