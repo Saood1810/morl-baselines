@@ -11,6 +11,7 @@ ref_point = np.array([0, -25])
 
 #wandb.init(mode="offline",project="Research Project Logs")
 for seed in SEEDS:
+    wandb.init(mode="offline",project="Research Project Logs")
     
     print(f"Running experiment with seed {seed}")
     env.reset(seed=seed)

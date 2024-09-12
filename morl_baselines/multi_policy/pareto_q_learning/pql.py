@@ -94,6 +94,7 @@ class PQL(MOAgent):
         self.project_name = project_name
         self.experiment_name = experiment_name
         self.log = log
+        
 
         if self.log:
             self.setup_wandb(mode="offline",project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
