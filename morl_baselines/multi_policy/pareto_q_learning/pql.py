@@ -58,9 +58,7 @@ class PQL(MOAgent):
         self.epsilon_decay_steps = epsilon_decay_steps
         self.final_epsilon = final_epsilon
         
-        #Set wandb up
-        wandb.init(mode="offline",project="Research Project Logs")
-
+      
         # Algorithm setup
         self.ref_point = ref_point
 
@@ -99,6 +97,10 @@ class PQL(MOAgent):
         self.experiment_name = experiment_name
         self.mode=mode
         self.log = log
+        
+          #Set wandb up
+        wandb.init(mode="offline",project="Research Project Logs",name= self.project_name)
+
         
 
         if self.log:
