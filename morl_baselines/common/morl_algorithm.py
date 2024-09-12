@@ -242,7 +242,7 @@ class MOAgent(ABC):
             wandb.config[key] = value
 
     def setup_wandb(
-        self, project_name: str, experiment_name: str, entity: Optional[str] = None, group: Optional[str] = None
+        self,mode:bool, project_name: str, experiment_name: str, entity: Optional[str] = None, group: Optional[str] = None
     ) -> None:
         """Initializes the wandb writer.
 
@@ -265,7 +265,7 @@ class MOAgent(ABC):
         monitor_gym = strtobool(os.environ.get("MONITOR_GYM", "True"))
 
         wandb.init(
-            mode="offline",
+            mode=mode,
             project=project_name,
             entity=entity,
             config=config,

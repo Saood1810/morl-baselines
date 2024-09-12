@@ -34,7 +34,7 @@ for seed in SEEDS:
         total_timesteps=1000,
         log_every=100,
         action_eval="hypervolume",
-        known_pareto_front=env.pareto_front(gamma=0.99),
+        known_pareto_front=env.pareto_front(gamma=0.9),
         ref_point=ref_point,
         eval_env=env,)
     print(pf)
