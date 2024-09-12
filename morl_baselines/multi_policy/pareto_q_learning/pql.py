@@ -224,7 +224,7 @@ class PQL(MOAgent):
             Set: The final Pareto front.
         """
         #collect the rewards at eval step
-        
+        log_every=self.log_every
         if action_eval == "hypervolume":
             score_func = self.score_hypervolume
         elif action_eval == "pareto_cardinality":
@@ -247,6 +247,7 @@ class PQL(MOAgent):
         tracked_policy_rewards = []
 
         while self.global_step < total_timesteps:
+            print("HI uses custom code")
             state, _ = self.env.reset()
             state = int(np.ravel_multi_index(state, self.env_shape))
             terminated = False
