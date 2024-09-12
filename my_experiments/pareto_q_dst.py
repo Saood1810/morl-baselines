@@ -32,14 +32,14 @@ for seed in SEEDS:
         project_name="Research Project Logs",
         log=False,)
 
-    pf,policies = agent.train(
+    _,policies = agent.train(
         total_timesteps=1000,
         log_every=100,
         action_eval="hypervolume",
         known_pareto_front=env.pareto_front(gamma=0.9),
         ref_point=ref_point,
         eval_env=env,)
-    print(pf)
+    #print(pf)
     pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=eval_pql(policies,ref_point,env,agent.gamma)
     log_results(pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs","Pareto Q-Learning","Pareto Q-Learning")
     
