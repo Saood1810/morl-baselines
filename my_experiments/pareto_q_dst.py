@@ -5,11 +5,11 @@ from morl_baselines.multi_policy.pareto_q_learning.pql import PQL
 import os
 import wandb
 
-SEEDS = [42,43,44]  # 10 seeds
+SEEDS = [42]  # 10 seeds
 env = mo_gym.make("deep-sea-treasure-concave-v0")
 ref_point = np.array([0, -25])
 
-wandb.init(mode="offline",project="Research Project Logs")
+#wandb.init(mode="offline",project="Research Project Logs")
 for seed in SEEDS:
     
     print(f"Running experiment with seed {seed}")
@@ -27,20 +27,22 @@ for seed in SEEDS:
         final_epsilon=0.1,
         seed=seed,
         experiment_name="Pareto Q-Learning in DST",
+        project_name="Research Project Logs",
         log=True,)
 
     pf = agent.train(
-        total_timesteps=1000000,
+        total_timesteps=1000,
         log_every=100,
         action_eval="hypervolume",
         known_pareto_front=env.pareto_front(gamma=0.99),
         ref_point=ref_point,
         eval_env=env,)
     print(pf)
+    agent.close_wandb()
 
     # Execute a policy
     target = np.array(pf.pop())
     print(f"Tracking {target}")
     reward = agent.track_policy(target, env=env)
     print(f"Obtained {reward}")
-    wandb.finish()
+    #wandb.finish()

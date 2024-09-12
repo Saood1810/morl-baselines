@@ -265,6 +265,7 @@ class MOAgent(ABC):
         monitor_gym = strtobool(os.environ.get("MONITOR_GYM", "True"))
 
         wandb.init(
+            mode="offline",
             project=project_name,
             entity=entity,
             config=config,
