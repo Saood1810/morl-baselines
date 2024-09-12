@@ -242,7 +242,7 @@ class MOAgent(ABC):
             wandb.config[key] = value
 
     def setup_wandb(
-        self,mode:bool, project_name: str, experiment_name: str, entity: Optional[str] = None, group: Optional[str] = None
+        self,mode:str, project_name: str, experiment_name: str, entity: Optional[str] = None, group: Optional[str] = None
     ) -> None:
         """Initializes the wandb writer.
 

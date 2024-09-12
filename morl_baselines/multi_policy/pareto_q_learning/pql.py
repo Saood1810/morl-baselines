@@ -96,7 +96,7 @@ class PQL(MOAgent):
         self.log = log
 
         if self.log:
-            self.setup_wandb(mode=True,project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
+            self.setup_wandb(mode="offline",project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
 
     def get_config(self) -> dict:
         """Get the configuration dictionary.
