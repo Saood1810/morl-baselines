@@ -9,6 +9,7 @@ from utilities import eval_pql,log_results
 SEEDS = [42]  # 10 seeds
 env = mo_gym.make("deep-sea-treasure-concave-v0")
 ref_point = np.array([0, -25])
+os.environ["WANDB_MODE"] = "offline"
 
 #wandb.init(mode="offline",project="Research Project Logs")
 for seed in SEEDS:
@@ -30,7 +31,7 @@ for seed in SEEDS:
         seed=seed,
         experiment_name="Pareto Q-Learning in DST",
         project_name="Research Project Logs",
-        log=False,)
+        log=True,)
 
     policies = agent.train(
         total_timesteps=1000,
@@ -39,6 +40,7 @@ for seed in SEEDS:
         known_pareto_front=env.pareto_front(gamma=0.9),
         ref_point=ref_point,
         eval_env=env,)
+    agent.close_wandb()
     print(policies)
     #pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=eval_pql(policies,ref_point,env,agent.gamma)
     #log_results(pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs","Pareto Q-Learning","Pareto Q-Learning")
