@@ -29,7 +29,7 @@ for seed in SEEDS:
         seed=seed,
         experiment_name="Pareto Q-Learning in DST",
         project_name="Research Project Logs",
-        log=True,)
+        log=False,)
 
     pf = agent.train(
         total_timesteps=1000,

@@ -57,6 +57,9 @@ class PQL(MOAgent):
         self.initial_epsilon = initial_epsilon
         self.epsilon_decay_steps = epsilon_decay_steps
         self.final_epsilon = final_epsilon
+        
+        #Set wandb up
+        wandb.init(mode="offline",project="Research Project Logs")
 
         # Algorithm setup
         self.ref_point = ref_point
@@ -255,7 +258,7 @@ class PQL(MOAgent):
                 self.avg_reward[state, action] += (reward - self.avg_reward[state, action]) / self.counts[state, action]
                 state = next_state
 
-                if self.log and self.global_step % log_every == 0:
+                if self.global_step % log_every == 0:
                     wandb.log({"global_step": self.global_step})
                     pf = self._eval_all_policies(eval_env)
                     log_all_multi_policy_metrics(
@@ -274,6 +277,7 @@ class PQL(MOAgent):
                 0,
                 self.final_epsilon,
             )
+        wandb.finish() 
 
         return self.get_local_pcs(state=0)
 
