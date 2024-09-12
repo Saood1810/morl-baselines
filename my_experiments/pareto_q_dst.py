@@ -11,7 +11,7 @@ ref_point = np.array([0, -25])
 
 #wandb.init(mode="offline",project="Research Project Logs")
 for seed in SEEDS:
-    wandb.init(mode="offline",project="Research Project Logs")
+    #wandb.init(mode="offline",project="Research Project Logs")
     
     print(f"Running experiment with seed {seed}")
     env.reset(seed=seed)
@@ -39,7 +39,7 @@ for seed in SEEDS:
         ref_point=ref_point,
         eval_env=env,)
     print(pf)
-    agent.close_wandb()
+    #agent.close_wandb()
 
     # Execute a policy
     target = np.array(pf.pop())
