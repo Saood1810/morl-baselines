@@ -40,7 +40,7 @@ for seed in SEEDS:
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
   exp_name = f"Balanced Linear Experiment with seed {seed}"
-  rows, cols = len(weight_combinations), 10 
+  rows, cols = len(weight_combinations), 10000 
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -59,9 +59,9 @@ for seed in SEEDS:
 
     agent = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.9, weights=weights, log=False)
 
-    for z in range(0, 10):
+    for z in range(0, 10000):
         agent.train(
-            total_timesteps=10,
+            total_timesteps=100,
             reset_num_timesteps= False,
             start_time=time.time(),
             eval_env=eval_env,
