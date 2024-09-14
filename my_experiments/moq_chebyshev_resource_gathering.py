@@ -40,7 +40,7 @@ for seed in SEEDS:
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
   exp_name = f"Balanced Chebyshev Experiment with seed {seed}"
-  rows, cols = len(weight_combinations), 10000  
+  rows, cols = len(weight_combinations), 500  
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -57,11 +57,11 @@ for seed in SEEDS:
     scalarization = tchebicheff(tau=4.0, reward_dim=2)
     weights =np.array(weight_combinations[i])
 
-    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.9, weights=weights, log=False)
+    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=500000, gamma=0.9, weights=weights, log=False)
 
-    for z in range(0, 10000):
+    for z in range(0, 500):
         agent.train(
-            total_timesteps=100,
+            total_timesteps=1000,
             reset_num_timesteps= False,
             start_time=time.time(),
             eval_env=eval_env,
