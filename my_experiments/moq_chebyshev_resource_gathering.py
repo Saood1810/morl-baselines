@@ -54,7 +54,7 @@ for seed in SEEDS:
     print(i)
     env.reset(seed=seed)
     eval_env.reset(seed=seed)
-    scalarization = tchebicheff(tau=4.0, reward_dim=2)
+    scalarization = tchebicheff(tau=4.0, reward_dim=3)
     weights =np.array(weight_combinations[i])
 
     agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=500000, gamma=0.9, weights=weights, log=False)
