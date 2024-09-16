@@ -58,7 +58,7 @@ def evaluate(tracked_policies,ref_point,eval_env):
   igd_scores=[0]
   sparsity_scores=[0]
   cardinality_scores=[0]
-  true_pf=eval_env.pareto_front(gamma=0.9)
+  true_pf=eval_env.pareto_front(gamma=0.99)
   # Number of columns (timesteps)
   num_columns = tracked_policies.shape[1]
   print(num_columns)
