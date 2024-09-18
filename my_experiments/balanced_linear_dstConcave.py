@@ -33,13 +33,13 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 import random
 
 
-SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
-env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.99)
-eval_env = mo_gym.make("deep-sea-treasure-concave-v0", render_mode="rgb_array")
+SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51,52]  # 10 seeds
+env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
+eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
-  exp_name = f"Balanced Linear Experiment with seed {seed}"
-  rows, cols = 11, 10000   #11 Agents
+  exp_name = f"Balanced Linear Experiment in DST with seed {seed}"
+  rows, cols = 11, 4000   #11 Agents
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -49,25 +49,26 @@ for seed in SEEDS:
   for i in range(0, 11):
       print(i)
       
-          
+          #scalarization = tchebicheff(tau=4.0, reward_dim=2)
       weights = np.array([1 - (i / 10), i / 10])
 
-      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=1000000, gamma=0.9, weights=weights,seed=seed, log=False)
+      chebyshev = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights,seed=seed, log=False)
 
-      for z in range(0, 10000):
-          linear.train(
+      for z in range(0, 4000):
+          chebyshev.train(
               total_timesteps=100,
               reset_num_timesteps= False,
               start_time=time.time(),
               eval_env=eval_env,
           )
           #eval_env.reset()
-          _,_,_,disc_reward=(eval_mo(linear, env=eval_env, w=weights))
+          _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
-  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-25]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V2",exp_name,"Balanced MOQ Linear DST")
+  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env)
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V5",exp_name,"MOQ Linear DST")
+  
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
- 
+
   
