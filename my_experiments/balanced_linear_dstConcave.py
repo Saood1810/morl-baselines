@@ -33,7 +33,7 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 import random
 
 
-SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51,52]  # 10 seeds
+SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 for seed in SEEDS:
@@ -66,7 +66,7 @@ for seed in SEEDS:
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V5",exp_name,"MOQ Linear DST")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"MOQ Linear DST")
   
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
