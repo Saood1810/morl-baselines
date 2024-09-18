@@ -38,7 +38,7 @@ env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gam
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
-  exp_name = f"Full Cheby Experiment G 0.9 with seed {seed}"
+  exp_name = f"0.01 Cheby Experiment G 0.9 with seed {seed}"
   rows, cols = 11, 4000   #11 Agents
   random.seed(seed)
   np.random.seed(seed)
