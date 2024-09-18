@@ -49,10 +49,10 @@ for seed in SEEDS:
   for i in range(0, 11):
       print(i)
       
-      scalarization = tchebicheff(tau=4.0, reward_dim=2)
+      #scalarization = tchebicheff(tau=4.0, reward_dim=2)
       weights = np.array([1 - (i / 10), i / 10])
 
-      chebyshev = MOQLearning(env, scalarization=scalarization,initial_epsilon=0.1,final_epsilon=0.1, gamma=0.9, weights=weights,seed=seed, log=False)
+      chebyshev = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=0.1,final_epsilon=0.1, gamma=0.9, weights=weights,seed=seed, log=False)
 
       for z in range(0, 4000):
           chebyshev.train(
