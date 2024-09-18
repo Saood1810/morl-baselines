@@ -38,7 +38,7 @@ env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gam
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
-  exp_name = f"0.01 Cheby Experiment G 0.9 with seed {seed}"
+  exp_name = f"0.01 Linear Experiment G 0.9 with seed {seed}"
   rows, cols = 11, 4000   #11 Agents
   random.seed(seed)
   np.random.seed(seed)
@@ -49,10 +49,10 @@ for seed in SEEDS:
   for i in range(0, 11):
       print(i)
       
-      scalarization = tchebicheff(tau=4.0, reward_dim=2)
+      #scalarization = tchebicheff(tau=4.0, reward_dim=2)
       weights = np.array([1 - (i / 10), i / 10])
 
-      chebyshev = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1, gamma=0.9, weights=weights,seed=seed, log=False)
+      chebyshev = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1, gamma=0.9, weights=weights,seed=seed, log=False)
 
       for z in range(0, 4000):
           chebyshev.train(
