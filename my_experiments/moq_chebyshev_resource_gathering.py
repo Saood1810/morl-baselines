@@ -34,14 +34,14 @@ import random
 
 
 SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
-env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.9)
-eval_env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.9)
+env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.99)
+eval_env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.99)
 for seed in SEEDS:
   
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
-  exp_name = f"Balanced Chebyshev Experiment with seed {seed}"
-  rows, cols = len(weight_combinations), 300  
+  exp_name = f"Chebyshev in RG Experiment with seed {seed}"
+  rows, cols = len(weight_combinations), 400  
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -58,9 +58,9 @@ for seed in SEEDS:
     scalarization = tchebicheff(tau=2.0, reward_dim=3)
     weights =np.array(weight_combinations[i])
 
-    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=300000, gamma=0.99, weights=weights, log=False)
+    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.99, weights=weights, log=False)
 
-    for z in range(0, 300):
+    for z in range(0, 400):
         agent.train(
             total_timesteps=1000,
             reset_num_timesteps= False,
@@ -73,7 +73,7 @@ for seed in SEEDS:
         
   
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V4",exp_name,"Chebyshev Resource Gathering")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"Chebyshev Resource Gathering")
   print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)
  
