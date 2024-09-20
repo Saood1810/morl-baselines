@@ -32,7 +32,6 @@ class PQL(MOAgent):
         project_name: str = "MORL-Baselines",
         experiment_name: str = "Pareto Q-Learning",
         wandb_entity: Optional[str] = None,
-        mode: str = "offline",
         log: bool = True,
     ):
         """Initialize the Pareto Q-learning algorithm.
@@ -57,8 +56,7 @@ class PQL(MOAgent):
         self.initial_epsilon = initial_epsilon
         self.epsilon_decay_steps = epsilon_decay_steps
         self.final_epsilon = final_epsilon
-        
-      
+
         # Algorithm setup
         self.ref_point = ref_point
 
@@ -95,16 +93,10 @@ class PQL(MOAgent):
         # Logging
         self.project_name = project_name
         self.experiment_name = experiment_name
-        self.mode=mode
         self.log = log
-        
-          #Set wandb up
-        #wandb.init(mode="offline",project="Research Project Logs",name= self.project_name)
-
-        
 
         if self.log:
-            self.setup_wandb(mode=self.mode,project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
+            self.setup_wandb(project_name=self.project_name, experiment_name=self.experiment_name, entity=wandb_entity)
 
     def get_config(self) -> dict:
         """Get the configuration dictionary.
@@ -223,8 +215,6 @@ class PQL(MOAgent):
         Returns:
             Set: The final Pareto front.
         """
-        #collect the rewards at eval step
-        log_every=self.log_every
         if action_eval == "hypervolume":
             score_func = self.score_hypervolume
         elif action_eval == "pareto_cardinality":
@@ -244,10 +234,8 @@ class PQL(MOAgent):
                     "action_eval": action_eval,
                 }
             )
-        tracked_policy_rewards = []
 
         while self.global_step < total_timesteps:
-            print("HI uses custom code")
             state, _ = self.env.reset()
             state = int(np.ravel_multi_index(state, self.env_shape))
             terminated = False
@@ -264,18 +252,17 @@ class PQL(MOAgent):
                 self.avg_reward[state, action] += (reward - self.avg_reward[state, action]) / self.counts[state, action]
                 state = next_state
 
-                if self.global_step % log_every == 0:
-                    #wandb.log({"global_step": self.global_step})
+                if self.log and self.global_step % log_every == 0:
+                    wandb.log({"global_step": self.global_step})
                     pf = self._eval_all_policies(eval_env)
-                    tracked_policy_rewards.append(pf)
-                    '''log_all_multi_policy_metrics(
+                    log_all_multi_policy_metrics(
                         current_front=pf,
                         hv_ref_point=ref_point,
                         reward_dim=self.reward_dim,
                         global_step=self.global_step,
                         n_sample_weights=num_eval_weights_for_eval,
                         ref_front=known_pareto_front,
-                    )'''
+                    )
 
             self.epsilon = linearly_decaying_value(
                 self.initial_epsilon,
@@ -284,9 +271,8 @@ class PQL(MOAgent):
                 0,
                 self.final_epsilon,
             )
-        #wandb.finish() 
 
-        return tracked_policy_rewards
+        return self.get_local_pcs(state=0)
 
     def _eval_all_policies(self, env: gym.Env) -> List[np.ndarray]:
         """Evaluate all learned policies by tracking them."""
