@@ -16,7 +16,7 @@ ref_point = np.array([0, -50])
 
 #wandb.init(mode="offline",project="Research Project Logs")
 for seed in SEEDS:
-    wandb.init(mode="offline",group="Pareto Q-Learning in DST")
+    wandb.init(mode="offline",project="Trial Logs",group="Pareto Q-Learning in DST",name="Pareto Q-Learning in DST with seed "+str(seed))
     
     print(f"Running experiment with seed {seed}")
    
@@ -30,7 +30,7 @@ for seed in SEEDS:
         ref_point,
         gamma=0.9,
         initial_epsilon=1,
-        epsilon_decay_steps=0.01*10000,
+        epsilon_decay_steps=0.01*400000,
         final_epsilon=0.1,
         seed=seed,
         experiment_name="Pareto Q-Learning in DST with seed "+str(seed),
