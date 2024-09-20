@@ -40,7 +40,7 @@ for seed in SEEDS:
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
   exp_name = f"MOQ Linear Experiment in RG with seed {seed}"
-  rows, cols = len(weight_combinations), 300
+  rows, cols = len(weight_combinations), 400
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -57,9 +57,9 @@ for seed in SEEDS:
         #scalarization = tchebicheff(tau=4.0, reward_dim=2)
     weights =np.array(weight_combinations[i])
 
-    agent = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=300000, gamma=0.99, weights=weights, log=False)
+    agent = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.99, weights=weights, log=False)
 
-    for z in range(0, 300):
+    for z in range(0, 400):
         agent.train(
             total_timesteps=1000,
             reset_num_timesteps= False,
@@ -72,7 +72,7 @@ for seed in SEEDS:
         
   
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V4",exp_name,"MOQ Linear Resource Gathering")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"MOQ Linear Resource Gathering")
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
  
