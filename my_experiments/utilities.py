@@ -50,7 +50,7 @@ def eval_pql(tracked_policies,ref_point,eval_env,gamma):
   return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
   
 
-def evaluate(tracked_policies,ref_point,eval_env):
+def evaluate(tracked_policies,ref_point,eval_env,gamma):
 
 
   hypervolume_scores = [0]
@@ -58,7 +58,7 @@ def evaluate(tracked_policies,ref_point,eval_env):
   igd_scores=[0]
   sparsity_scores=[0]
   cardinality_scores=[0]
-  true_pf=eval_env.pareto_front(gamma=0.99)
+  true_pf=eval_env.pareto_front(gamma=gamma)
   # Number of columns (timesteps)
   num_columns = tracked_policies.shape[1]
   print(num_columns)
