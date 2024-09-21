@@ -71,7 +71,7 @@ for seed in SEEDS:
         moq_eval_rewards[i][z]=disc_reward
         
   
-  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env)
+  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env,0.99)
   log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MOQ Linear Resource Gathering")
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
