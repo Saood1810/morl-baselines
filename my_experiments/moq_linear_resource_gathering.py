@@ -67,12 +67,12 @@ for seed in SEEDS:
             eval_env=eval_env,
         )
         #eval_env.reset()
-        _,_,_,disc_reward=(eval_mo(agent, env=eval_env, w=weights))
+        _,_,_,disc_reward=(policy_evaluation_mo(agent, env=eval_env, w=weights,scalarization=weighted_sum,rep=10))
         moq_eval_rewards[i][z]=disc_reward
         
   
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"MOQ Linear Resource Gathering")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MOQ Linear Resource Gathering")
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
  
