@@ -34,13 +34,13 @@ import random
 
 
 SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
-env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.99)
-eval_env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.99)
+env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.9)
+eval_env = MORecordEpisodeStatistics(mo_gym.make("resource-gathering-v0"), gamma=0.9)
 for seed in SEEDS:
   
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
-  exp_name = f"Chebyshev in RG Experiment with seed {seed}"
+  exp_name = f"Chebyshev in RG Experiment with gamma 0.9 and seed {seed}"
   rows, cols = len(weight_combinations), 400  
   random.seed(seed)
   np.random.seed(seed)
@@ -55,10 +55,10 @@ for seed in SEEDS:
     print(i)
     env.reset(seed=seed)
     eval_env.reset(seed=seed)
-    scalarization = tchebicheff(tau=2.0, reward_dim=3)
+    scalarization = tchebicheff(tau=6.0, reward_dim=3)
     weights =np.array(weight_combinations[i])
 
-    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.99, weights=weights, log=False)
+    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights, log=False)
 
     for z in range(0, 400):
         agent.train(
@@ -72,8 +72,8 @@ for seed in SEEDS:
         moq_eval_rewards[i][z]=disc_reward
         
   
-  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"Chebyshev Resource Gathering")
+  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([-1,-1,-2]),eval_env,0.90)
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"Chebyshev Resource Gathering gamma 0.9")
   print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)
  
