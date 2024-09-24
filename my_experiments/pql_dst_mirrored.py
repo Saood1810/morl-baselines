@@ -16,7 +16,7 @@ ref_point = np.array([0, -50])
 
 #wandb.init(mode="offline",project="Research Project Logs")
 for seed in SEEDS:
-    wandb.init(mode="offline",project="Research Project Logs V6",group="Pareto Q-Learning 800k in DST Mirrored",name="Pareto Q-Learning 800k in DST Mirrored with seed "+str(seed))
+    wandb.init(mode="offline",project="Research Project Logs V6",group="Pareto Q-Learning 800k in DST Mirrored V2",name="Pareto Q-Learning 800k in DST Mirrored with seed "+str(seed))
     
     print(f"Running experiment with seed {seed}")
    
@@ -39,13 +39,14 @@ for seed in SEEDS:
 
     pf = agent.train(
         total_timesteps=800000,
-        log_every=100,
+        log_every=1000,
         action_eval="hypervolume",
         known_pareto_front=env.pareto_front(gamma=0.9),
         ref_point=ref_point,
         eval_env=eval_env,)
     
     print(pf)
+    
     wandb.finish()
     #pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=eval_pql(policies,ref_point,env,agent.gamma)
     #log_results(pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs","Pareto Q-Learning","Pareto Q-Learning")
