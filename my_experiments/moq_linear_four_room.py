@@ -40,7 +40,7 @@ for seed in SEEDS:
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
   exp_name = f"MOQ Linear Experiment in RG with seed Gamma 0.9 {seed}"
-  rows, cols = len(weight_combinations), 8
+  rows, cols = len(weight_combinations), 800
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -59,15 +59,15 @@ for seed in SEEDS:
 
     agent = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*800000, gamma=0.9, weights=weights, log=False)
 
-    for z in range(0, 8):
+    for z in range(0, 800):
         agent.train(
-            total_timesteps=1,
+            total_timesteps=1000,
             reset_num_timesteps= False,
             start_time=time.time(),
             eval_env=eval_env,
         )
         #eval_env.reset()
-        _,_,_,disc_reward=(policy_evaluation_mo(agent, env=eval_env, w=weights,scalarization=weighted_sum,rep=10))
+        _,_,_,disc_reward=(eval_mo(agent, env=eval_env, w=weights))
         moq_eval_rewards[i][z]=disc_reward
         
   
