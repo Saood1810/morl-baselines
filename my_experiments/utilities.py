@@ -50,6 +50,8 @@ def eval_pql(tracked_policies,ref_point,eval_env,gamma):
   return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
   
 
+
+
 def evaluate(tracked_policies,ref_point,eval_env,gamma):
 
 
@@ -78,6 +80,56 @@ def evaluate(tracked_policies,ref_point,eval_env,gamma):
 
   return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
 
+
+def eval_unknown(tracked_policies,ref_point,eval_env,gamma):
+  
+  hypervolume_scores=[0]
+  
+  sparsity_scores=[0]
+  cardinality_scores=[0]
+  # Number of columns (timesteps)
+  num_columns = tracked_policies.shape[1]
+  print(num_columns)
+
+  # Iterate over each timestep
+  for i in range(num_columns):
+      # Extract policies at this timestep for all agents
+      pf = tracked_policies[:, i, :].tolist()
+
+      # Filter Pareto front and calculate hypervolume
+      pf = list(filter_pareto_dominated(pf))
+      if len(pf) > 0:
+          hypervolume_scores.append(hypervolume(ref_point, pf))
+          cardinality_scores.append(cardinality(pf))
+          sparsity_scores.append(sparsity(pf))
+
+  return pf,hypervolume_scores,cardinality_scores,sparsity_scores
+
+def log_unknown_results(pf, hypervolume_scores,cardinality_scores,sparsity_scores,proj_name,exp_name,group):
+  wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
+  timesteps=[0]
+  for i in range(len(hypervolume_scores)):
+    timesteps.append((i+1)*100) #Tracking every 100 steps
+
+  # Log each score set to wandb
+  #wandb.log({"Hypervolume": hypervolume_scores, "Cardinality":cardinality_scores,"IGD":igd_scores,"Sparsity":sparsity_scores})
+   # Log each score set to wandb
+  for i, (timestep,hv_score, cd_score, sp_score) in enumerate(zip(timesteps,hypervolume_scores, cardinality_scores, sparsity_scores)):
+        wandb.log({
+
+            'hypervolume': hv_score,
+            'cardinality': cd_score,   
+            'sparsity': sp_score,
+            'global_step': timestep,
+        })
+  wandb.finish()
+
+
+  # Print results
+  print("Final Pareto Front:", pf)
+  
+  
+  
 def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group):
 
   wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)

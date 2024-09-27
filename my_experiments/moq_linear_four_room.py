@@ -37,11 +37,10 @@ SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
 env = MORecordEpisodeStatistics(mo_gym.make("four-room-v0"), gamma=0.9)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("four-room-v0"), gamma=0.9)
 for seed in SEEDS:
-  
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
-  exp_name = f"MOQ Chebyshev Experiment in RG with seed {seed}"
-  rows, cols = len(weight_combinations), 800  
+  exp_name = f"MOQ Linear Experiment in RG with seed Gamma 0.9 {seed}"
+  rows, cols = len(weight_combinations), 800
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -55,26 +54,26 @@ for seed in SEEDS:
     print(i)
     env.reset(seed=seed)
     eval_env.reset(seed=seed)
-    scalarization = tchebicheff(tau=6.0, reward_dim=3)
+        #scalarization = tchebicheff(tau=4.0, reward_dim=2)
     weights =np.array(weight_combinations[i])
 
-    agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.1*800000, gamma=0.9, weights=weights, log=False)
+    agent = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*800000, gamma=0.9, weights=weights, log=False)
 
     for z in range(0, 800):
         agent.train(
-            total_timesteps=1000,
+            total_timesteps=1,
             reset_num_timesteps= False,
             start_time=time.time(),
             eval_env=eval_env,
         )
         #eval_env.reset()
-        _,_,_,disc_reward=(eval_mo(agent, env=eval_env, w=weights))
+        _,_,_,disc_reward=(policy_evaluation_mo(agent, env=eval_env, w=weights,scalarization=weighted_sum,rep=10))
         moq_eval_rewards[i][z]=disc_reward
         
   
-  pf,hypervolume_scores,cardinality_scores,sparsity_scores=eval_unknown(moq_eval_rewards,np.array([-1,-1,-1]),eval_env,0.90)
-  log_unknown_results(pf,hypervolume_scores,cardinality_scores,sparsity_scores,"Research Project Logs V6",exp_name,"Balanced Chebyshev Four Room")
-  print("Balanced MOQ Chebyshev Results for seed: ",seed)
+  pf,hypervolume_scores,cardinality_scores,sparsity_scores=eval_unknown(moq_eval_rewards,np.array([-1,-1,-1]),eval_env,0.9)
+  log_unknown_results(pf,hypervolume_scores,cardinality_scores,sparsity_scores,"Research Project Logs V6",exp_name,"MOQ Linear Four Room")
+  print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
  
   
