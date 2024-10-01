@@ -130,7 +130,7 @@ def log_unknown_results(pf, hypervolume_scores,cardinality_scores,sparsity_score
   
   
   
-def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group,total_timesteps):
+def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group):
 
   wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
   timesteps=[0]

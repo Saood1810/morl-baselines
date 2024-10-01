@@ -65,8 +65,8 @@ for seed in SEEDS:
           _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
-  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V4",exp_name,"MOQ Linear DST with gamma of 0.9")
+  pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V4",exp_name,"MOQ Linear DST with gamma of 0.9",)
   
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
