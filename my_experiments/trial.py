@@ -1,4 +1,4 @@
-from utilities import log_results,evaluate
+from utilities import log_results,evaluate,new_log_results
 import time
 import gymnasium as gym
 import mo_gymnasium as mo_gym
@@ -66,7 +66,7 @@ for seed in SEEDS:
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V4",exp_name,"MOQ Linear DST with gamma of 0.9",)
+  new_log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6 Test",exp_name,"MOQ Linear DST with gamma of 0.9 v2",400)
   
   print("Balanced MOQ Linear Results for seed: ",seed)
   print(pf)
