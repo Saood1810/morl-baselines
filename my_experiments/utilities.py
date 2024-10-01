@@ -130,12 +130,15 @@ def log_unknown_results(pf, hypervolume_scores,cardinality_scores,sparsity_score
   
   
   
-def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group):
+def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group,total_timesteps):
 
   wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
   timesteps=[0]
   for i in range(len(hypervolume_scores)):
     timesteps.append((i+1)*100) #Tracking every 100 steps
+  
+  for i in range(0,total_timesteps):
+    wandb.log({"global_step": i})
 
   # Log each score set to wandb
   #wandb.log({"Hypervolume": hypervolume_scores, "Cardinality":cardinality_scores,"IGD":igd_scores,"Sparsity":sparsity_scores})
@@ -143,11 +146,11 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
   for i, (timestep,hv_score, cd_score, igd_score, sp_score) in enumerate(zip(timesteps,hypervolume_scores, cardinality_scores, igd_scores, sparsity_scores)):
         wandb.log({
 
-            'hypervolume': hv_score,
-            'cardinality': cd_score,
-            'igd': igd_score,
-            'sparsity': sp_score,
-            'global_step': timestep,
+            'Hypervolume': hv_score,
+            'Cardinality': cd_score,
+            'IGD': igd_score,
+            'Sparsity': sp_score,
+            'Timesteps': timestep,
         })
   wandb.finish()
 
