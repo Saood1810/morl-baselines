@@ -151,28 +151,11 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
             'IGD': igd_score,
             'Sparsity': sp_score,
             'Timesteps': timestep,
-            'global_step': timestep*100,
+            'global_step': timestep*1000,
         })
   wandb.finish()
   
-def new_log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group,totalTimesteps):
-   
-  wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
-  timesteps=[0]
-  
-  for i in range(totalTimesteps):
-    if (i%100==0):
-      z=i%100
-      wandb.log({"global_step": i})
-      wandb.log({
 
-            'Hypervolume': hypervolume_scores[z],
-            'Cardinality': cardinality_scores[z],
-            'IGD': igd_scores[z],
-            'Sparsity':   sparsity_scores[z],
-            'Timesteps': timesteps[z],
-        })
-      
       
       
   
