@@ -52,7 +52,7 @@ for seed in SEEDS:
           #scalarization = tchebicheff(tau=4.0, reward_dim=2)
       weights = np.array([1 - (i / 10), i / 10])
 
-      chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=400000, gamma=0.9, weights=weights,seed=seed, log=False)
+      chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights,seed=seed, log=False)
 
       for z in range(0, 400):
           chebyshev.train(
@@ -66,7 +66,7 @@ for seed in SEEDS:
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MO Q Learning with Chebyshev Scalarization")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MO Q Learning with Chebyshev Scalarization and Low Exploration DST")
   
   print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)
