@@ -39,7 +39,7 @@ eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-mirrored-v0"
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
   exp_name = f" 800K Chebyshev in DST Mirrored Experiment with seed {seed}"
-  rows, cols = 11, 8000   #11 Agents
+  rows, cols = 11, 800   #11 Agents
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -54,9 +54,9 @@ for seed in SEEDS:
 
       chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=800000, gamma=0.9, weights=weights,seed=seed, log=False)
 
-      for z in range(0, 8000):
+      for z in range(0, 800):
           chebyshev.train(
-              total_timesteps=100,
+              total_timesteps=1000,
               reset_num_timesteps= False,
               start_time=time.time(),
               eval_env=eval_env,
@@ -66,7 +66,7 @@ for seed in SEEDS:
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
-  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V6",exp_name,"MOQ Chebyshev 800K DST Mirrored")
+  log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MOQ Chebyshev DST Mirrored")
   
   print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)
