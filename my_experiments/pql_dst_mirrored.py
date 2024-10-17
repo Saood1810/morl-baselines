@@ -45,6 +45,7 @@ for seed in SEEDS:
         ref_point=ref_point,
         eval_env=eval_env,)
     
+    
     print(pf)
     
     wandb.finish()
