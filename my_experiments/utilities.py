@@ -14,6 +14,8 @@ import wandb
 #wandb.init(mode="offline", project="CHPC Results")
 import numpy as np
 
+
+#Function to generate weight combinations for 3 objectives
 def generate_combinations(step=0.1):
     weights = [round(i * step, 1) for i in range(int(1 / step) + 1)]
     combinations = []
@@ -26,35 +28,13 @@ def generate_combinations(step=0.1):
 
 
 
-# will have exp_name as a parameter
-from pymoo.visualization.scatter import Scatter
-from pymoo.problems import get_problem
-
-def eval_pql(tracked_policies,ref_point,eval_env,gamma):
-  hypervolume_scores = [0]
-  igd_scores = [0]
-  sparsity_scores = [0]
-  cardinality_scores = [0]
-  true_pf = eval_env.pareto_front(gamma=gamma)
-  
-  
-  for policy in tracked_policies:
-    pf = policy
-    pf = list(filter_pareto_dominated(pf))
-    if len(pf) > 0:
-        hypervolume_scores.append(hypervolume(ref_point, pf))
-        cardinality_scores.append(cardinality(pf))
-        igd_scores.append(igd(true_pf, pf))
-        sparsity_scores.append(sparsity(pf))
-        
-  return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
-  
-
-
-
+#Function to evaluate the performance of the algorithm
 def evaluate(tracked_policies,ref_point,eval_env,gamma):
 
+#Tracked policies is a set which stores the discounted rewards of the policies every 1000 steps
 
+# Essentially from the tracked policies we are calculating the Hypervolume, Cardinality, IGD and Sparsity
+#This helps analyse the convergence to the Approximated Pareto fronts
   hypervolume_scores = [0]
   hypervolume_scores=[0]
   igd_scores=[0]
@@ -70,7 +50,7 @@ def evaluate(tracked_policies,ref_point,eval_env,gamma):
       # Extract policies at this timestep for all agents
       pf = tracked_policies[:, i, :].tolist()
 
-      # Filter Pareto front and calculate hypervolume
+      # Filter Pareto front and calculate hypervolume,cadinality,igd and sparsity
       pf = list(filter_pareto_dominated(pf))
       if len(pf) > 0:
           hypervolume_scores.append(hypervolume(ref_point, pf))
@@ -80,9 +60,10 @@ def evaluate(tracked_policies,ref_point,eval_env,gamma):
 
   return pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores
 
-
+# Function to evaluate the performance of the algorithm when the Pareto Front is not known
 def eval_unknown(tracked_policies,ref_point,eval_env,gamma):
   
+  #Function is same as above except it does not compute the IGD
   hypervolume_scores=[0]
   
   sparsity_scores=[0]
@@ -105,6 +86,7 @@ def eval_unknown(tracked_policies,ref_point,eval_env,gamma):
 
   return pf,hypervolume_scores,cardinality_scores,sparsity_scores
 
+#Plot the results of the algorithms which have been evaluated in environments with unknown Pareto Fronts
 def log_unknown_results(pf, hypervolume_scores,cardinality_scores,sparsity_scores,proj_name,exp_name,group):
   wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
   timesteps=[0]
@@ -129,7 +111,7 @@ def log_unknown_results(pf, hypervolume_scores,cardinality_scores,sparsity_score
   print("Final Pareto Front:", pf)
   
   
-  
+#Plot the results of the algorithms which have been evaluated in environments with known Pareto Fronts
 def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,proj_name,exp_name,group):
 
   wandb.init(mode="offline",project=proj_name,group=group,name=exp_name)
@@ -140,8 +122,6 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
   '''for i in range(0,total_timesteps):
     wandb.log({"global_step": i})'''
 
-  # Log each score set to wandb
-  #wandb.log({"Hypervolume": hypervolume_scores, "Cardinality":cardinality_scores,"IGD":igd_scores,"Sparsity":sparsity_scores})
    # Log each score set to wandb
   for i, (timestep,hv_score, cd_score, igd_score, sp_score) in enumerate(zip(timesteps,hypervolume_scores, cardinality_scores, igd_scores, sparsity_scores)):
         wandb.log({
@@ -159,74 +139,6 @@ def log_results(pf, hypervolume_scores,cardinality_scores,igd_scores,sparsity_sc
       
       
   
-
-
-  # Print results
-  print("Final Pareto Front:", pf)
-  '''print("Hypervolume Scores:", hypervolume_scores)
-  # Print results
-
-
-  # Plotting the hypervolume scores over time
-  plt.plot(hypervolume_scores)
-  plt.xlabel('Timesteps')
-  plt.ylabel('Hypervolume')
-  plt.title('Learning Curve with Hypervolume')
-  plt.grid(True)
-
-  #wandb.log({"roc": wandb.plot.roc_curve(hypervolume_scores)})
-  plt.show()
-
-
-  plt.plot(cardinality_scores)
-  plt.xlabel('Timesteps')
-  plt.ylabel('Cardinality')
-  plt.title('Learning Curve with Cardinality')
-  plt.grid(True)
-
-  #wandb.log({"roc": wandb.plot.roc_curve(cardinality_scores)})
-  plt.show()
-
-  plt.plot(sparsity_scores)
-  plt.xlabel('Timesteps')
-  plt.ylabel('Sparisty')
-  plt.title('Learning Curve with Sparsity')
-  plt.grid(True)
-
-  plt.show()
-
-  plt.plot(igd_scores)
-  plt.xlabel('Timesteps')
-  plt.ylabel('IGD')
-  plt.title('Learning Curve with IGD')
-  plt.grid(True)
-
-  plt.show()'''
-
-
-
-
-  
-def scatter_plot_known_pareto(pf1,pf2,eval_env,ref_point,exp_name,alg_name1,alg_name2):
-  
-
-  # Pareto front and hypervolume calculations
-  true_pf = eval_env.pareto_front(gamma=0.99)
- 
-  # Scatter plot using pymoo
-  plot = Scatter().add(np.array(true_pf),color="blue", marker="o", label="True Pareto Front")
-  plot.add(np.array(pf1), color="green",marker="X" ,label=alg_name1)
-
-  plot.add(np.array(pf2), color="red",marker="*", label=alg_name2)
-  plot.legend=True
-
-  # Save the plot to a file
-  plot.show()
-  file_name=exp_name+".png"
-  plt.savefig(file_name)
-
-  # Log the plot image to wandb
-  wandb.log({"Pareto Front": wandb.Image(file_name)})
 
 
 

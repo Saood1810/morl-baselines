@@ -33,13 +33,18 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 import random
 
 
-SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
+# Ran Experiment across 10 seed values
+SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  
+
+# Instantiate the environment
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-mirrored-v0"), gamma=0.9)
-eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-mirrored-v0"), gamma=0.9)
+eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-mirrored-v0"), gamma=0.9) #Test Environment
+
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
-  exp_name = f" 800K Chebyshev in DST Mirrored Experiment with seed {seed}"
-  rows, cols = 11, 800   #11 Agents
+  exp_name = f" 800K Chebyshev in DST Mirrored Experiment with seed {seed}" #Experiment Name...Useful when logging on Wandb
+  
+  rows, cols = 11, 800   # 11 Weight configurations evaluated across 800 iterations
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
@@ -49,11 +54,13 @@ for seed in SEEDS:
   for i in range(0, 11):
       print(i)
       
-          #scalarization = tchebicheff(tau=4.0, reward_dim=2)
+          
       weights = np.array([1 - (i / 10), i / 10])
 
+    # Initialize the MOQ Learning Algorithm with the Hyperparametersss obtained through sweeps
       chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=800000, gamma=0.9, weights=weights,seed=seed, log=False)
 
+    #After 100 timesteps, evaluate the policy
       for z in range(0, 800):
           chebyshev.train(
               total_timesteps=1000,
@@ -63,9 +70,13 @@ for seed in SEEDS:
           )
           #eval_env.reset()
           _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
-          moq_eval_rewards[i][z]=disc_reward
+          moq_eval_rewards[i][z]=disc_reward #Store the discounted rewards obtained from the evaluation
   eval_env.reset(seed=seed)
+  
+  #Upon the completion of the training process, evaluate performances using evalaute function defined in Utilities.py
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
+  
+  #Log Results to Wandb Dashboard
   log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MOQ Chebyshev DST Mirrored")
   
   print("Balanced MOQ Chebyshev Results for seed: ",seed)

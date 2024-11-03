@@ -32,26 +32,33 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 # Run the experiment for multiple seeds
 import random
 
-
+# Set seeds for reproducibility
 SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
+
+# Environment instantiation
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-mirrored-v0"), gamma=0.9)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-mirrored-v0"), gamma=0.9)
+
+# Run the experiment for multiple seeds
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
   exp_name = f"800K Linear Experiment in DST Mirrored with seed {seed}"
-  rows, cols = 11, 800   #11 Agents
+  rows, cols = 11, 800   # 11 weights tuples, 800 iterations
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
   eval_env.reset(seed=seed)
 
-  moq_eval_rewards=np.zeros((rows,cols,2))
+  moq_eval_rewards=np.zeros((rows,cols,2)) #Array to store the rewards for each weight combination across 800 iterations
+  
+  
   for i in range(0, 11):
       print(i)
       
-          #scalarization = tchebicheff(tau=4.0, reward_dim=2)
-      weights = np.array([1 - (i / 10), i / 10])
-
+          
+      weights = np.array([1 - (i / 10), i / 10])# Generate weights for the scalarization function , w1=1-w2 and w2=i/10
+      #Instantiate the MOQ Learning Agent with Hyperparameters
+      
       chebyshev = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=800000, gamma=0.9, weights=weights,seed=seed, log=False)
 
       for z in range(0, 800):

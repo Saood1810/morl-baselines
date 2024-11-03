@@ -34,38 +34,49 @@ import random
 
 
 SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
+# Environment Instantiation
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
+
+# Run the experiment for multiple seeds
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
   exp_name = f"Balanced Linear Experiment in DST with seed {seed}"
-  rows, cols = 11, 400   #11 Agents
+  rows, cols = 11, 400   #11 Weight combinations, 400 iterations
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
   eval_env.reset(seed=seed)
-
-  moq_eval_rewards=np.zeros((rows,cols,2))
+ 
+  moq_eval_rewards=np.zeros((rows,cols,2)) #Numpy array to store rewards for the 11 weight configurations across 400 iterations
+ 
   for i in range(0, 11):
       print(i)
       
-          #scalarization = tchebicheff(tau=4.0, reward_dim=2)
-      weights = np.array([1 - (i / 10), i / 10])
+         
+      weights = np.array([1 - (i / 10), i / 10])# Calculate the weights tuple - (1-w1,w1) where w1 ranges from 0 to 1 in steps of 0.1
 
-      chebyshev = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights,seed=seed, log=False)
+    #Algorithm Instantiation with Linear Scalarization and Hyperparameters
+      linear = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights,seed=seed, log=False)
 
+#Train the agent for 400 iterations
       for z in range(0, 400):
-          chebyshev.train(
+          linear.train(
               total_timesteps=1000,
               reset_num_timesteps= False,
               start_time=time.time(),
               eval_env=eval_env,
           )
           #eval_env.reset()
-          _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
+          #At end of ieteration, evaluate the agent and store the discounted reward
+          _,_,_,disc_reward=(eval_mo(linear, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
+  
+  # From the rewards, evaluate the convergence to Pareto Front, Hypervolume, Cardinality, IGD and Sparsity 
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.9)
+  
+  #log results to wandb
   log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MO Q Learning with Linear Scalarization and Low Exploration in DST Concave")
   
   print("Balanced MOQ Linear Results for seed: ",seed)

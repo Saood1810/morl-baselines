@@ -9,13 +9,18 @@ import wandb
 from utilities import eval_pql,log_results
 
 SEEDS = [42,43,44,45,46,47,48,49,50,51]  # 10 seeds
+#Environment Instantiation
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
-ref_point = np.array([0, -50])
 
 
-#wandb.init(mode="offline",project="Research Project Logs")
+ref_point = np.array([0, -50]) #Used for Hypervolume Calculation
+
+
+
 for seed in SEEDS:
+    #Wandb Initialization
+    # Had to use offline mode since CHPC cluster does not have internet access
     wandb.init(mode="offline",project="Research Project Logs V7",group="Pareto Q Learning LOW Exploration in DST Concave",name="PQL in DST with seed "+str(seed))
     
     print(f"Running experiment with seed {seed}")
@@ -25,6 +30,7 @@ for seed in SEEDS:
     env.reset(seed=seed)
     eval_env.reset(seed=seed)
     
+    #Algorithm Instantiation
     agent = PQL(
         env,
         ref_point,
@@ -36,21 +42,18 @@ for seed in SEEDS:
         experiment_name="Pareto Q-Learning in DST with seed "+str(seed),
         project_name="Research Project Logs",
         log=True,)
-
+    
+    #Training
     pf = agent.train(
         total_timesteps=400000,
-        log_every=1000,
+        log_every=1000,#Every 1000 timesteps, log the results
         action_eval="hypervolume",
         known_pareto_front=env.pareto_front(gamma=0.9),
         ref_point=ref_point,
         eval_env=eval_env,)
     
     print(pf)
+    #Plots are automatically logged to wandb
     wandb.finish()
-    #pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=eval_pql(policies,ref_point,env,agent.gamma)
-    #log_results(pf_approx,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs","Pareto Q-Learning","Pareto Q-Learning")
-    
-    
-    #agent.close_wandb()
-
+   
     
