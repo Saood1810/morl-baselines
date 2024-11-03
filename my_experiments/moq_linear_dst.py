@@ -73,7 +73,7 @@ for seed in SEEDS:
           moq_eval_rewards[i][z]=disc_reward
   eval_env.reset(seed=seed)
   
-  # From the rewards, evaluate the convergence to Pareto Front, Hypervolume, Cardinality, IGD and Sparsity 
+ #Evaluate the performance of the MOQ agent across all weight configurations by calculating the pf approximation .Hypervolume, Cardinality, IGD and Sparsity
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.9)
   
   #log results to wandb

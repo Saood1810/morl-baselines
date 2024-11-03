@@ -51,16 +51,18 @@ for seed in SEEDS:
 
   moq_eval_rewards=np.zeros((rows,cols,2)) #Array to store the rewards for each weight combination across 800 iterations
   
-  
+  #For each weight configuration, we intialize the MOQ agent and train it for 800 iterations
   for i in range(0, 11):
       print(i)
       
           
       weights = np.array([1 - (i / 10), i / 10])# Generate weights for the scalarization function , w1=1-w2 and w2=i/10
-      #Instantiate the MOQ Learning Agent with Hyperparameters
       
+      #Instantiate the specific MOQ Learning Algorithm with weight Configuration and Linear Scalarization and Hyperparameters
+     
       chebyshev = MOQLearning(env, scalarization=weighted_sum,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=800000, gamma=0.9, weights=weights,seed=seed, log=False)
-
+     
+     #Each configuration is trained for 800 iterations
       for z in range(0, 800):
           chebyshev.train(
               total_timesteps=1000,
@@ -68,11 +70,16 @@ for seed in SEEDS:
               start_time=time.time(),
               eval_env=eval_env,
           )
-          #eval_env.reset()
+          #At the end of each iteration, the policy is evaluated and the discounted reward is stored
           _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
+  
   eval_env.reset(seed=seed)
+  
+  #Evaluate the performance of the MOQ agent across all weight configurations by calculating the pf approximation .Hypervolume, Cardinality, IGD and Sparsity
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
+  
+  #The results are logged to wandb
   log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MOQ Linear DST Mirrored")
   
   print("Balanced MOQ Linear Results for seed: ",seed)

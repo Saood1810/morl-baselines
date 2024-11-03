@@ -82,7 +82,8 @@ for seed in SEEDS:
         _,_,_,disc_reward=(eval_mo(agent, env=eval_env, w=weights))
         moq_eval_rewards[i][z]=disc_reward #Store the reward of 
         
-  #Now that we got the rewards at each iteration for each configuration, we call this function to analyse convergence to the Pareto axxporixmated front 
+  #Now that we got the rewards at each iteration for each configuration
+  # We Evaluate the performance of the MOQ algorithms across all weight configurations by calculating the pf approximation .Hypervolume, Cardinality, IGD and Sparsity
   pf,hypervolume_scores,cardinality_scores,sparsity_scores=eval_unknown(moq_eval_rewards,np.array([-1,-1,-1]),eval_env,0.99)
   
   #Plot results to wandb

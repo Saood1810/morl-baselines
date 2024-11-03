@@ -32,28 +32,36 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 # Run the experiment for multiple seeds
 import random
 
-
+# Set seeds for reproducibility
 SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
+# Environment instantiation
 env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("deep-sea-treasure-concave-v0"), gamma=0.9)
+
+# Run the experiment for multiple seeds
 for seed in SEEDS:
   print(f"Running experiment with seed {seed}")
   exp_name = f"Chebyshev in DST Experiment with seed {seed}"
-  rows, cols = 11, 400   #11 Agents
+  rows, cols = 11, 400   #11 Weight configurations trained 400 iterations
   random.seed(seed)
   np.random.seed(seed)
   env.reset(seed=seed)
   eval_env.reset(seed=seed)
-
+  
+  # Array to store the rewards for each weight combination across 400 iterations
   moq_eval_rewards=np.zeros((rows,cols,2))
+  
+  # For each weight configuration, we intialize the MOQ agent and train it for 400 iterations
   for i in range(0, 11):
       print(i)
       
-          #scalarization = tchebicheff(tau=4.0, reward_dim=2)
-      weights = np.array([1 - (i / 10), i / 10])
+    
+      weights = np.array([1 - (i / 10), i / 10]) #Calculate the weight configuration
 
-      chebyshev = MOQLearning(env, scalarization=tchebicheff(tau=4.0, reward_dim=2),initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights,seed=seed, log=False)
-
+      #Initialize the MOQ agent with Chebyshev Scalarization and its Hyperparameters
+      chebyshev = MOQLearning(env, scalarization=c,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=0.01*400000, gamma=0.9, weights=weights,seed=seed, log=False)
+      
+      #Each configuration is trained for 400 iterations
       for z in range(0, 400):
           chebyshev.train(
               total_timesteps=1000,
@@ -61,11 +69,15 @@ for seed in SEEDS:
               start_time=time.time(),
               eval_env=eval_env,
           )
-          #eval_env.reset()
+          
+          #Test the learnt policy by obtaining the discounted reward
           _,_,_,disc_reward=(eval_mo(chebyshev, env=eval_env, w=weights))
           moq_eval_rewards[i][z]=disc_reward
+  
   eval_env.reset(seed=seed)
+  #Evaluate the performance of the MOQ agent across all weight configurations by calculating the pf approximation .Hypervolume, Cardinality, IGD and Sparsity
   pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores=evaluate(moq_eval_rewards,np.array([0,-50]),eval_env,0.90)
+  #Log the results to wandb
   log_results(pf,hypervolume_scores,cardinality_scores,igd_scores,sparsity_scores,"Research Project Logs V7",exp_name,"MO Q Learning with Chebyshev Scalarization and Low Exploration DST")
   
   print("Balanced MOQ Chebyshev Results for seed: ",seed)

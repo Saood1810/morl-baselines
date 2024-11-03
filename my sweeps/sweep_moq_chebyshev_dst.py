@@ -5,12 +5,12 @@ wandb.login()
 
 # sweep configuration is Defined
 sweep_configuration = {
-    'method': 'random',  # Chose random search
+    'method': 'random',  # Chose random search too many values to run all possible combinations
     'metric': {'name': 'Hypervolume', 'goal': 'maximize'},  # We seek to maximize the Hypervolume
     'parameters': {
           'tau': {'values':[2,4,6]},
           
-          'total_timesteps':{'values': [100000,200000,300000]},
+          'total_timesteps':{'values': [100000,200000,300000]}, 
           'gamma': {'values':[0.99,0.9]},
           'w1':{'values': [0.9,0.5,0.1]}
 

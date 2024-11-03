@@ -32,12 +32,16 @@ from morl_baselines.common.evaluation import policy_evaluation_mo
 # Run the experiment for multiple seeds
 import random
 
-
+# Set seeds for reproducibility
 SEEDS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51]  # 10 seeds
+
+# Environment instantiation
 env = MORecordEpisodeStatistics(mo_gym.make("four-room-v0"), gamma=0.99)
 eval_env = MORecordEpisodeStatistics(mo_gym.make("four-room-v0"), gamma=0.99)
+
+# Run the experiment for multiple seeds
 for seed in SEEDS:
-  
+  # Generate weight combinations
   weight_combinations = generate_combinations()
   print(f"Running experiment with seed {seed}")
   exp_name = f"MOQ Chebyshev Experiment in RG with seed {seed}"
@@ -48,18 +52,23 @@ for seed in SEEDS:
   eval_env.reset(seed=seed)
 
   
- 
+ # Array to store the rewards for each weight combination across 800 iterations
   moq_eval_rewards=np.zeros((rows,cols,3))
-
+  
+ # For each weight configuration, we intialize the MOQ agent and train it for 800 iterations
+ #This means if there is 64 weight configurations, we will have 64 agents trained for 800 iterations
+  
   for i in range(0, len(weight_combinations)):
     print(i)
     env.reset(seed=seed)
     eval_env.reset(seed=seed)
     scalarization = tchebicheff(tau=6.0, reward_dim=3)
     weights =np.array(weight_combinations[i])
-
+  
+    #Instantiate the MOQ alg with the specific weight configuration and Chebyshev Scalarization and Hyperparameters
     agent = MOQLearning(env, scalarization=scalarization,initial_epsilon=1,final_epsilon=0.1,epsilon_decay_steps=800000, gamma=0.99, weights=weights, log=False)
 
+   #Train the agent for 800 iterations
     for z in range(0, 800):
         agent.train(
             total_timesteps=1000,
@@ -67,12 +76,15 @@ for seed in SEEDS:
             start_time=time.time(),
             eval_env=eval_env,
         )
-        #eval_env.reset()
+       #Test the learnt policy by obtaining the discounted reward at end of each iteration
         _,_,_,disc_reward=(eval_mo(agent, env=eval_env, w=weights))
         moq_eval_rewards[i][z]=disc_reward
         
-  
+  #Analyse the Convergence to Pareto front approximation, Hypervolume, Cardinality and Sparsity
+  #function defined in Utilities.py
   pf,hypervolume_scores,cardinality_scores,sparsity_scores=eval_unknown(moq_eval_rewards,np.array([-1,-1,-1]),eval_env,0.99)
+  
+  #Log the results to wandb
   log_unknown_results(pf,hypervolume_scores,cardinality_scores,sparsity_scores,"Research Project Logs V7",exp_name,"Chebyshev Four Room 0.99")
   print("Balanced MOQ Chebyshev Results for seed: ",seed)
   print(pf)

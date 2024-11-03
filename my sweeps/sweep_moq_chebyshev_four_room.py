@@ -13,11 +13,11 @@ from morl_baselines.common.scalarization import weighted_sum
 
 # Define the sweep configuration
 sweep_configuration = {
-    'method': 'random',  # Chose Random Search
+    'method': 'random',  # Chose Random Search, TOO many values to run all possible combinations
     'metric': {'name': 'Hypervolume', 'goal': 'maximize'},  # We seek to optimize Hypervolume
     'parameters': {
 
-          'tau': {'values':[2,4,6]},
+          'tau': {'values':[2,4,6]},  #This is the tau value for the Chebyshev Scalarization
           'gamma': {'values':[0.99,0.9]},    
           'w1':{'values': [0.3,0.1,0.7]},
           'w2':{'values': [0.3,0.1]}
@@ -77,7 +77,7 @@ def train():
     wandb.log({'Hypervolume': hv})
 
 
-# Initialize the sweep and run the algorith
+# Initialize the sweep and run the algorithm
 sweep_id = wandb.sweep(sweep_configuration, project="Research Project V3.0")
 wandb.agent(sweep_id, function=train, count=25) # Run 25 trials
 wandb.finish()
